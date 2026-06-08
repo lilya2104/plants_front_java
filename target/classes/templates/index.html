@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments/head"/>
+<body>
+<div th:replace="fragments/navbar"></div>
+<main class="container">
+     <article class="text-center">
+          <hgroup>
+               <h1>Добро пожаловать в магазин-энциклопедию комнатных растений!</h1>
+               <h3>От знания — к росту. Ваш персональный гид в мире зелени</h3>
+          </hgroup>
+
+          <div class="grid" style="margin-top: 3rem;">
+               <div>
+                    <h3>Магазин</h3>
+                    <p>Покупайте лучшие комнатные растения</p>
+                    <a th:href="@{/products}" role="button" class="secondary">Перейти в магазин</a>
+               </div>
+               <div>
+                    <h3>Энциклопедия</h3>
+                    <p>Изучайте статьи по уходу за растениями от экспертов</p>
+                    <a th:href="@{/articles}" role="button" class="secondary">Читать статьи</a>
+               </div>
+          </div>
+     </article>
+</main>
+<footer th:replace="fragments/footer"></footer>
+</body>
+</html>

@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:replace="fragments/head"/>
+<body>
+<div th:replace="fragments/navbar"></div>
+<main class="container">
+    <article style="max-width: 600px; margin: 0 auto;">
+        <hgroup>
+            <h1>Добавление растения</h1>
+            <p>Заполните информацию о растении ниже</p>
+        </hgroup>
+
+        <form th:action="@{/products/add}"
+              th:method="post"
+              th:object="${productModel}"> <!-- привязка формы к модели -->
+
+
+            <!-- Основная информация о продукте -->
+            <fieldset>
+
+                <label for="name">
+                    Название растения
+                    <!-- th:field="*{name}" привязка поля к свойству объекта (автозаполнение name, id, value) -->
+                    <input th:field="*{name}"
+                           th:errorclass="is-invalid"
+                           type="text"
+                           id="name"
+                           placeholder="Введите название растения"
+                           required/>
+                    <!-- th:errors="*{name}" — отображение ошибок валидации
+                    th:if="${#fields.hasErrors('name')}" условное отображение ошибок -->
+                    <small th:if="${#fields.hasErrors('name')}" th:errors="*{name}" class="text-danger"></small>
+                </label>
+
+                <label for="price">
+                    Цена
+                    <input th:field="*{price}"
+                           th:errorclass="is-invalid"
+                           type="number"
+                           min="1"
+                           step="1"
+                           id="price"
+                           placeholder="Введите цену"
+                           required/>
+                    <small th:if="${#fields.hasErrors('price')}" th:errors="*{price}" class="text-danger"></small>
+                </label>
+
+                <label for="description">
+                    Описание
+                    <textarea th:field="*{description}"
+                              th:errorclass="is-invalid"
+                              id="description"
+                              rows="4"
+                              placeholder="Напишите описание для растения..."
+                              required></textarea>
+                    <small th:if="${#fields.hasErrors('description')}" th:errors="*{description}" class="text-danger"></small>
+                </label>
+            </fieldset>
+
+
+            <!-- Характеристики растения -->
+            <fieldset>
+
+                <label for="careLevel">
+                    Уровень сложности ухода
+                    <select th:field="*{properties.careLevel}"
+                    th:errorclass="is-invalid"
+                    id="careLevel"
+                    required>
+                    <option value="">Выберите уровень</option>
+                    <option th:each="level : ${careLevels}"
+                    th:value="${level}"
+                    th:text="${level.displayName}"></option>
+                    </select>
+                    <small th:if="${#fields.hasErrors('properties.careLevel')}" th:errors="*{properties.careLevel}" class="text-danger"></small>
+                </label>
+
+                <label for="lightRequirement">
+                    Требования к освещению
+                    <select th:field="*{properties.lightRequirement}"
+                            th:errorclass="is-invalid"
+                            id="lightRequirement"
+                            required>
+                        <option value="">Выберите освещение</option>
+                        <option th:each="light : ${lightRequirements}"
+                                th:value="${light}"
+                                th:text="${light.displayName}"></option>
+                    </select>
+                    <small th:if="${#fields.hasErrors('properties.lightRequirement')}" th:errors="*{properties.lightRequirement}" class="text-danger"></small>
+                </label>
+
+                <label for="wateringFrequency">
+                    Частота полива
+                    <select th:field="*{properties.wateringFrequency}"
+                            th:errorclass="is-invalid"
+                            id="wateringFrequency"
+                            required>
+                        <option value="">Выберите частоту полива</option>
+                        <option th:each="watering : ${wateringFrequencies}"
+                                th:value="${watering}"
+                                th:text="${watering.displayName}"></option>
+                    </select>
+                    <small th:if="${#fields.hasErrors('properties.wateringFrequency')}" th:errors="*{properties.wateringFrequency}" class="text-danger"></small>
+                </label>
+
+                <label for="growthRate">
+                    Скорость роста
+                    <select th:field="*{properties.growthRate}"
+                            th:errorclass="is-invalid"
+                            id="growthRate"
+                            required>
+                        <option value="">Выберите скорость роста</option>
+                        <option th:each="growth : ${growthRates}"
+                                th:value="${growth}"
+                                th:text="${growth.displayName}"></option>
+                    </select>
+                    <small th:if="${#fields.hasErrors('properties.growthRate')}" th:errors="*{properties.growthRate}" class="text-danger"></small>
+                </label>
+
+                <label for="sizePlant">
+                    Размер растения
+                    <select th:field="*{properties.sizePlant}"
+                    th:errorclass="is-invalid"
+                    id="sizePlant"
+                    required>
+                    <option value="">Выберите размер</option>
+                    <option th:each="size : ${sizePlants}"
+                    th:value="${size}"
+                    th:text="${size.displayName}"></option>
+                    </select>
+                    <small th:if="${#fields.hasErrors('properties.sizePlant')}" th:errors="*{properties.sizePlant}" class="text-danger"></small>
+                </label>
+
+                <label>
+                    <input th:field="*{properties.petSafe}"
+                           type="checkbox"/>
+                    Безопасноcть для животных
+                </label>
+                <small th:if="${#fields.hasErrors('properties.petSafe')}" th:errors="*{properties.petSafe}" class="text-danger"></small>
+            </fieldset>
+
+
+            <button type="submit">Добавить растение</button>
+        </form>
+    </article>
+</main>
+<footer th:replace="fragments/footer"></footer>
+</body>
+</html>

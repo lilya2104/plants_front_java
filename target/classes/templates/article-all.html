@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments/head"/>
+<body>
+<div th:replace="fragments/navbar"></div>
+<main class="container">
+    <hgroup>
+        <h1>Все статьи</h1>
+        <p>Просмотр и поиск статей в энциклопедии</p>
+    </hgroup>
+
+    <!-- Сообщение об успехе -->
+    <div th:if="${successMessage}" style="padding: 1rem; margin-bottom: 1rem; background-color: var(--pico-ins-color); border-radius: var(--pico-border-radius);">
+        <p th:text="${successMessage}" style="margin: 0; color: white;"></p>
+    </div>
+
+    <!-- Форма поиска -->
+    <form method="get" action="/articles">
+        <div class="grid">
+            <input type="search"
+                   name="searchTerm"
+                   th:value="${searchTerm}"
+                   placeholder="Поиск по названию или описанию..."
+                   aria-label="Поиск">
+            <button type="submit">Найти</button>
+        </div>
+    </form>
+
+    <!-- Фильтр по семейству растений -->
+    <form method="get" action="/articles" style="margin-top: 1rem;">
+        <label for="plantFamily">
+            <strong>Семейство растения:</strong>
+            <select name="plantFamily" id="plantFamily" onchange="this.form.submit()">
+                <option value="">Все семейства</option>
+                <option th:each="family : ${plantFamilies}"
+                        th:value="${family}"
+                        th:selected="${selectedFamily == family}"
+                        th:text="${family.displayName}"></option>
+            </select>
+        </label>
+    </form>
+
+    <!-- Список статей -->
+    <!-- ${allArticles} - обращение к данным, переданным через model.addAttribute() -->
+    <div th:each="article : ${allArticles}" class="card" style="margin-bottom: 1rem;">
+        <h3 th:text="${article.title}"></h3>
+        <p><strong>Время чтения:</strong> <span th:text="${article.readTime}"></span> мин.</p>
+        <p><strong>Семейство:</strong> <span th:text="${article.plantFamily?.displayName} ?: 'Не указано'"></span></p>
+        <p><strong>Описание:</strong> <span th:text="${#strings.abbreviate(article.description, 100)}"></span></p>
+        <a th:href="@{/articles/article-details/{article-title}(article-title=${article.title})}" role="button" class="outline">
+            Читать статью
+        </a>
+    </div>
+
+    <!-- Пагинация -->
+    <nav th:if="${totalPages != null && totalPages > 1}" aria-label="Pagination">
+        <ul style="display: flex; justify-content: center; list-style: none; padding: 0;">
+            <li th:if="${currentPage > 0}">
+                <a th:href="@{/articles(page=${currentPage - 1}, size=2, sortBy='title')}" role="button" class="outline">Назад</a>
+            </li>
+            <li style="margin: 0 1rem; align-self: center;">
+                <span>Страница <strong th:text="${currentPage + 1}"></strong> из <strong th:text="${totalPages}"></strong></span>
+            </li>
+            <li th:if="${currentPage + 1 < totalPages}">
+                <a th:href="@{/articles(page=${currentPage + 1}, size=2, sortBy='title')}" role="button" class="outline">Вперед</a>
+            </li>
+        </ul>
+    </nav>
+
+
+    <p th:if="${#lists.isEmpty(allArticles)}" class="text-center">
+        <em>Статьи не найдены. Попробуйте изменить критерии поиска</em>
+    </p>
+</main>
+<footer th:replace="fragments/footer"></footer>
+</body>
+</html>

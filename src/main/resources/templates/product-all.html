@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments/head"/>
+<body>
+<div th:replace="fragments/navbar"></div>
+<main class="container">
+    <hgroup>
+        <h1>Все растения</h1>
+        <p>Просмотр и поиск растений в магазине</p>
+    </hgroup>
+
+    <!-- Сообщение об успехе -->
+    <div th:if="${successMessage}" style="padding: 1rem; margin-bottom: 1rem; background-color: var(--pico-ins-color); border-radius: var(--pico-border-radius);">
+        <p th:text="${successMessage}" style="margin: 0; color: white;"></p>
+    </div>
+
+    <!-- Форма поиска -->
+    <form method="get" action="/products">
+        <div class="grid">
+            <input type="search"
+                   name="searchTerm"
+                   th:value="${searchTerm}"
+                   placeholder="Поиск по названию..."
+                   aria-label="Поиск">
+            <button type="submit">Найти</button>
+        </div>
+    </form>
+
+    <!-- Форма фильтрации по свойствам -->
+    <form method="get" action="/products" style="margin-top: 1rem;">
+        <fieldset>
+            <h3>Фильтр по свойствам</h3>
+            <div class="grid">
+                <label>
+                    Сложность ухода:
+                    <select name="careLevel">
+                        <option value="">-</option>
+                        <option th:each="level : ${careLevels}"
+                        th:value="${level}"
+                        th:selected="${selectedCareLevel == level}"
+                        th:text="${level.displayName}"></option>
+                    </select>
+                </label>
+                <label>
+                    Освещение:
+                    <select name="lightRequirement">
+                        <option value="">-</option>
+                        <option th:each="light : ${lightRequirements}"
+                        th:value="${light}"
+                        th:selected="${selectedLightRequirement == light}"
+                        th:text="${light.displayName}"></option>
+                    </select>
+                </label>
+                <label>
+                    Частота полива:
+                    <select name="wateringFrequency">
+                        <option value="">-</option>
+                        <option th:each="water : ${wateringFrequencies}"
+                        th:value="${water}"
+                        th:selected="${selectedWateringFrequency == water}"
+                        th:text="${water.displayName}"></option>
+                    </select>
+                </label>
+                <label>
+                    Скорость роста:
+                    <select name="growthRate">
+                        <option value="">-</option>
+                        <option th:each="growth : ${growthRates}"
+                        th:value="${growth}"
+                        th:selected="${selectedGrowthRate == growth}"
+                        th:text="${growth.displayName}"></option>
+                    </select>
+                </label>
+                <label>
+                    Размер растения:
+                    <select name="sizePlant">
+                        <option value="">-</option>
+                        <option th:each="size : ${sizePlants}"
+                                th:value="${size}"
+                                th:selected="${selectedSizePlant == size}"
+                                th:text="${size.displayName}"></option>
+                    </select>
+                </label>
+                <label>
+                    <input type="checkbox" name="petSafe" value="true"
+                           th:checked="${selectedPetSafe == true}">
+                    Безопасно для животных
+                </label>
+            </div>
+            <div class="grid">
+            <button type="submit" class="primary" style="margin-top: 0.5rem; padding: 10px 15px;">Применить фильтры</button>
+            <a href="/products" role="button" class="secondary" style="margin-top: 0.5rem; padding: 10px 15px;">Сбросить фильтры</a>
+            </div>
+        </fieldset>
+    </form>
+
+    <!-- Список растений -->
+    <!-- ${allProducts} - обращение к данным, переданным через model.addAttribute() -->
+    <div th:each="product : ${allProducts}" class="card" style="margin-bottom: 1rem;">
+        <h3 th:text="${product.name}"></h3>
+        <p><strong>Цена:</strong> <span th:text="${product.price}"></span> ₽</p>
+        <p th:if="${product.description}"><strong>Описание:</strong> <span th:text="${#strings.abbreviate(product.description, 100)}"></span></p>
+
+        <a th:href="@{/products/{productName}(productName=${product.name})}" role="button" class="outline">
+            Подробнее
+        </a>
+    </div>
+
+    <!-- Пагинация -->
+    <nav th:if="${totalPages != null && totalPages > 1}" aria-label="Pagination">
+        <ul style="display: flex; justify-content: center; list-style: none; padding: 0;">
+            <li th:if="${currentPage > 0}">
+                <a th:href="@{/products(page=${currentPage - 1}, size=2, sortBy='name')}" role="button" class="outline">Назад</a>
+            </li>
+            <li style="margin: 0 1rem; align-self: center;">
+                <span>Страница <strong th:text="${currentPage + 1}"></strong> из <strong th:text="${totalPages}"></strong></span>
+            </li>
+            <li th:if="${currentPage + 1 < totalPages}">
+                <a th:href="@{/products(page=${currentPage + 1}, size=2, sortBy='name')}" role="button" class="outline">Вперед</a>
+            </li>
+        </ul>
+    </nav>
+
+    <p th:if="${#lists.isEmpty(allProducts)}" class="text-center">
+        <em>Растения не найдены. Попробуйте изменить критерии поиска</em>
+    </p>
+</main>
+<footer th:replace="fragments/footer"></footer>
+</body>
+</html>

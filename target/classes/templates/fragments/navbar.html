@@ -1,0 +1,41 @@
+<nav xmlns:sec="http://www.thymeleaf.org/extras/spring-security" xmlns:th="http://www.thymeleaf.org">
+    <div class="container">
+        <ul>
+            <li><strong><a href="/" style="text-decoration: none;">Магазин-Энциклопедия комнатных растений</a></strong></li>
+        </ul>
+        <ul>
+            <li>
+                <a th:href="@{/}" style="text-decoration: none; color: var(--pico-primary); font-weight: 500;">Главная</a>
+            </li>
+            <li sec:authorize="hasRole('ADMIN')">
+                <a th:href="@{/products/add}" style="text-decoration: none; color: var(--pico-primary); font-weight: 500;">Добавить растение</a>
+            </li>
+            <li sec:authorize="hasAnyRole('ADMIN', 'MODERATOR')">
+                <a th:href="@{/articles/add}" style="text-decoration: none; color: var(--pico-primary); font-weight: 500;">Добавить статью</a>
+            </li>
+            <li>
+                <a th:href="@{/products}" style="text-decoration: none; color: var(--pico-primary); font-weight: 500;">Магазин</a>
+            </li>
+            <li>
+                <a th:href="@{/articles}" style="text-decoration: none; color: var(--pico-primary); font-weight: 500;">Энциклопедия</a>
+            </li>
+
+            <li sec:authorize="isAuthenticated()" style="margin: 0;">
+                <a th:href="@{/users/profile}" style="text-decoration: none; color: var(--pico-primary); font-weight: 500;">
+                    <th:block sec:authentication="name"></th:block>
+                </a>
+            </li>
+            <li sec:authorize="isAuthenticated()" style="margin: 0;">
+                <form th:method="post" th:action="@{/users/logout}" style="margin: 0;">
+                    <button type="submit" class="outline" style="margin: 0;">Выйти</button>
+                </form>
+            </li>
+            <li sec:authorize="!isAuthenticated()" style="margin: 0;">
+                <a th:href="@{/users/register}" role="button">Регистрация</a>
+            </li>
+            <li sec:authorize="!isAuthenticated()" style="margin: 0;">
+                <a th:href="@{/users/login}" role="button" class="secondary">Вход</a>
+            </li>
+        </ul>
+    </div>
+</nav>
