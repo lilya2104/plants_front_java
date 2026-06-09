@@ -39,7 +39,7 @@ public class AppSecurityConfiguration {
                         // публичные страницы
                         .requestMatchers("/", "/users/login", "/users/register", "/users/login-error").permitAll()
                         .requestMatchers("/articles/all", "/articles/article-details/**").permitAll()
-                        .requestMatchers("/products/all", "/products/product-details/**", "/products/filter").permitAll()
+                        .requestMatchers("/products/**").permitAll()
                         // информация о системе
                         .requestMatchers("/actuator/**").permitAll() // в реальном проекте нужно ограничить доступ к health и info, остальное только для админа
                         // аутентификация пользователя
