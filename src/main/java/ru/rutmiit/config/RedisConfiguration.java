@@ -18,33 +18,27 @@ import org.springframework.data.redis.serializer.StringRedisSerializer;
 
 import java.time.Duration;
 
-/* Конфигурация Redis для кэширования в Spring Boot */
-
-@Configuration // обозначает класс как конфигурационный
-@EnableCaching // включает механизм кэширования
+@Configuration
+@EnableCaching
 public class RedisConfiguration {
 
-    // читают настройки из pplication.properties
     @Value("${spring.data.redis.host}")
-    private String redisHost; // localhost
+    private String redisHost;
 
     @Value("${spring.data.redis.port}")
-    private int redisPort; // 6379
+    private int redisPort;
 
-    // создает соединение с редис и управляет подключением сервера к редису
     @Bean
     public LettuceConnectionFactory redisConnectionFactory() {
         RedisStandaloneConfiguration configuration = new RedisStandaloneConfiguration(redisHost, redisPort);
         return new LettuceConnectionFactory(configuration);
     }
 
-    // сереализует java объекты в json для хранения в рэдис
-    // десериализует json обратно в java объекты
+    // ✅ Для Redis (с DefaultTyping)
     @Bean
-    @Primary
     public ObjectMapper redisObjectMapper() {
         ObjectMapper objectMapper = new ObjectMapper();
-        objectMapper.registerModule(new JavaTimeModule()); // для работы с датами
+        objectMapper.registerModule(new JavaTimeModule());
         objectMapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
 
         BasicPolymorphicTypeValidator typeValidator = BasicPolymorphicTypeValidator.builder()
@@ -55,14 +49,24 @@ public class RedisConfiguration {
         return objectMapper;
     }
 
-    // для кэширования
+    // ✅ Для REST API (чистый JSON) — добавляем этот бин
+    @Bean
+    @Primary  // ← этот будет основным для приложения
+    public ObjectMapper objectMapper() {
+        ObjectMapper objectMapper = new ObjectMapper();
+        objectMapper.registerModule(new JavaTimeModule());
+        objectMapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+        // ⚠️ НЕ вызываем activateDefaultTyping!
+        return objectMapper;
+    }
+
     @Bean
     public RedisCacheConfiguration defaultCacheConfig(ObjectMapper redisObjectMapper) {
         StringRedisSerializer keySerializer = new StringRedisSerializer();
         GenericJackson2JsonRedisSerializer valueSerializer = new GenericJackson2JsonRedisSerializer(redisObjectMapper);
 
         return RedisCacheConfiguration.defaultCacheConfig()
-                .entryTtl(Duration.ofMinutes(2)) // время жизни кэша - 2 минуты
+                .entryTtl(Duration.ofMinutes(2))
                 .serializeKeysWith(RedisSerializationContext.SerializationPair.fromSerializer(keySerializer))
                 .serializeValuesWith(RedisSerializationContext.SerializationPair.fromSerializer(valueSerializer));
     }
