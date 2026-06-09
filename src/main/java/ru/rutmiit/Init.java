@@ -253,6 +253,9 @@ public class Init implements CommandLineRunner {
 
         AddArticleDto roseArticleDto = new AddArticleDto();
         roseArticleDto.setTitle("Как правильно ухаживать за розами");
+        roseArticleDto.setReadTime(15);
+        roseArticleDto.setDescription("Узнайте все секреты выращивания роз - от посадки до подготовки к зиме. " +
+                "В этой статье мы расскажем о правильном поливе, обрезке, подкормке и защите от болезней.");
         roseArticleDto.setPlantFamily(PlantFamily.DECORATIVE_FLOWERING);
         roseArticleDto.setProductName("Роза");
 
@@ -296,6 +299,9 @@ public class Init implements CommandLineRunner {
 
         AddArticleDto cactusArticleDto = new AddArticleDto();
         cactusArticleDto.setTitle("Секреты выращивания кактусов");
+        cactusArticleDto.setReadTime(12);
+        cactusArticleDto.setDescription("Кактусы - идеальные растения для начинающих цветоводов. " +
+                "В статье расскажем о правильном поливе, освещении, размножении и защите от вредителей.");
         cactusArticleDto.setPlantFamily(PlantFamily.CACTI);
         cactusArticleDto.setProductName("Кактус");
 
@@ -336,5 +342,4 @@ public class Init implements CommandLineRunner {
 
         log.info("Создано 2 статьи");
     }
-
 }

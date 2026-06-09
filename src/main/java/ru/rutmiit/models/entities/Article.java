@@ -11,7 +11,7 @@ public class Article extends BaseEntity {
     private String title;
 
     @Column(columnDefinition = "INT", nullable = false)
-    private int readTime;
+    private Integer readTime;
 
     @Column(columnDefinition = "TEXT", nullable = false)
     private String description;
@@ -38,11 +38,11 @@ public class Article extends BaseEntity {
         this.title = title;
     }
 
-    public int getReadTime() {
+    public Integer getReadTime() {
         return readTime;
     }
 
-    public void setReadTime(int readTime) {
+    public void setReadTime(Integer readTime) {
         this.readTime = readTime;
     }
 
