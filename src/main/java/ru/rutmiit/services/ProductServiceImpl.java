@@ -56,8 +56,14 @@ public class ProductServiceImpl implements ProductService {
     public List<ShowProductInfoDto> allProducts() {
         log.debug("Получение списка всех растений");
         List<ShowProductInfoDto> products = productRepository.findAll().stream()
-                .map(product -> mapper.map(product, ShowProductInfoDto.class))
-                .collect(Collectors.toList());
+                .map(product -> {
+                    ShowProductInfoDto dto = mapper.map(product, ShowProductInfoDto.class);
+                    if (product.getArticle() != null) {
+                        ShowArticleInfoDto articleDto = mapper.map(product.getArticle(), ShowArticleInfoDto.class);
+                        dto.setArticle(articleDto);
+                    }
+                    return dto;
+                }).collect(Collectors.toList());
         log.info("Найдено растений: {}", products.size());
         return products;
     }

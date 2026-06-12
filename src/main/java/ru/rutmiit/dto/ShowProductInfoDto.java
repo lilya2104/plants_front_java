@@ -7,6 +7,8 @@ public class ShowProductInfoDto implements Serializable {
     private String name;
     private Double price;
     private String description;
+    private ProductPropertiesDto properties;
+    private ShowArticleInfoDto article;
 
     public String getId() {
         return id;
@@ -38,5 +40,21 @@ public class ShowProductInfoDto implements Serializable {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public ProductPropertiesDto getProperties() {
+        return properties;
+    }
+
+    public void setProperties(ProductPropertiesDto properties) {
+        this.properties = properties;
+    }
+
+    public ShowArticleInfoDto getArticle() {
+        return article;
+    }
+
+    public void setArticle(ShowArticleInfoDto article) {
+        this.article = article;
     }
 }
